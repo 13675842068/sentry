@@ -7,6 +7,7 @@ import theme from 'app/utils/theme';
 import {IconBookmark} from 'app/icons/iconBookmark';
 import Link from 'app/components/links/link';
 import space from 'app/styles/space';
+import cardStyles from 'app/styles/card';
 import {callIfFunction} from 'app/utils/callIfFunction';
 
 type Props = {
@@ -69,33 +70,11 @@ class QueryCard extends React.PureComponent<Props> {
 }
 
 const StyledQueryCard = styled(Link)`
-  background: ${p => p.theme.white};
-  border: 1px solid ${p => p.theme.borderLight};
-  border-radius: ${p => p.theme.borderRadius};
-  display: flex;
-  align-items: stretch;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  text-align: left;
-  padding: 0;
+  ${p => cardStyles({withHover: true, ...p})};
 
   &:focus,
   &:hover {
-    box-shadow: 0px 0px 0px 6px rgba(209, 202, 216, 0.2);
-    position: relative;
-    top: -2px;
-    outline: none;
-  }
-
-  &:active {
-    box-shadow: 0px 0px 0px 6px rgba(209, 202, 216, 0.5);
-  }
-
-  /* This is to ensure the graph is visually clickable */
-  * {
-    cursor: pointer;
+    top: -1px;
   }
 `;
 
