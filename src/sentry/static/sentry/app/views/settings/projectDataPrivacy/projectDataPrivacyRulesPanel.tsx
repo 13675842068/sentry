@@ -8,10 +8,10 @@ import Link from 'app/components/links/link';
 import {IconAdd} from 'app/icons/iconAdd';
 import Button from 'app/components/button';
 import ButtonBar from 'app/components/buttonBar';
-import {addMessage} from 'app/actionCreators/indicator';
 
 import ProjectDataPrivacyRulesForm from './projectDataPrivacyRulesForm';
 import {DATA_TYPE, ACTION_TYPE} from './utils';
+import activeIndicatorMessageStatus, {Status} from './activeIndicatorMessageStatus';
 
 type Rule = Omit<
   React.ComponentProps<typeof ProjectDataPrivacyRulesForm>,
@@ -21,7 +21,7 @@ type Rule = Omit<
 type State = {
   rules: Array<Rule>;
   savedRules: Array<Rule>;
-  status?: 'success' | 'loading' | 'error';
+  status?: Status;
 };
 
 let requestResponse: Array<Rule> = [
@@ -50,6 +50,12 @@ class ProjectDataPrivacyRulesPanel extends React.Component<{}, State> {
     this.loadRules();
   }
 
+  componentDidUpdate(_prevProps, prevState) {
+    if (prevState.status) {
+      this.resetStatus();
+    }
+  }
+
   loadRules = async () => {
     // add request here
     const result: Array<Rule> = await new Promise(resolve => {
@@ -63,6 +69,14 @@ class ProjectDataPrivacyRulesPanel extends React.Component<{}, State> {
       savedRules: result,
       status: undefined,
     });
+  };
+
+  resetStatus = () => {
+    setTimeout(() => {
+      this.setState({
+        status: undefined,
+      });
+    }, 1000);
   };
 
   formRef: React.RefObject<HTMLFormElement> = React.createRef();
@@ -135,6 +149,7 @@ class ProjectDataPrivacyRulesPanel extends React.Component<{}, State> {
 
   handleCancelForm = () => {
     this.setState(prevState => ({
+      status: 'cancelling',
       rules: prevState.savedRules,
     }));
   };
@@ -142,16 +157,8 @@ class ProjectDataPrivacyRulesPanel extends React.Component<{}, State> {
   render() {
     const {rules, status} = this.state;
 
-    if (status === 'loading') {
-      addMessage(t('Loading...'), status, {duration: 1000});
-    }
-
-    if (status === 'success') {
-      addMessage(t('Success'), status, {duration: 2000});
-    }
-
-    if (status === 'error') {
-      addMessage(t('An error occurred while saving the form'), status);
+    if (status) {
+      activeIndicatorMessageStatus(status);
     }
 
     return (
