@@ -40,8 +40,16 @@ export const isIntegrationDirectoryActive = (organization?: Organization) => {
   }
 };
 
-export const getSortIntegrationsByWeightActive = () =>
-  localStorage.getItem(SORT_INTEGRATIONS_BY_WEIGHT) === '1';
+export const getSortIntegrationsByWeightActive = (organization?: Organization) => {
+  const variant = organization?.experiments?.IntegrationDirectorySortWeightExperiment;
+  if (localStorage.getItem(SORT_INTEGRATIONS_BY_WEIGHT) === '1') {
+    return true;
+  }
+  if (localStorage.getItem(SORT_INTEGRATIONS_BY_WEIGHT) === '0') {
+    return false;
+  }
+  return variant && variant === '1';
+};
 
 export type SingleIntegrationEvent = {
   eventKey:
